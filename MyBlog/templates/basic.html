@@ -9,12 +9,12 @@
     integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 
-<body>
+<body style="background-color: #212529; color: aliceblue;">
   {% comment %} <h1>Hello, world!</h1> {% endcomment %}
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary ">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Daily Blogs</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -41,13 +41,23 @@
           </li>
 
         </ul>
-
+        
 
         <form action="/search" method="get" class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query"
             id="query">
           <button class="btn btn-outline-success mx-2" type="submit">Search</button>
         </form>
+        {% if user.is_authenticated %}
+
+        <div class="nav-item dropdown">
+          <a  class="nav-link dropdown-toggle text-success" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Welcome, {{request.user}}</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"> 
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          </ul>
+        </div>
+
+        {% else %}
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#login-Modal">
           Log-In
@@ -55,12 +65,13 @@
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#signup-Modal">
           Sign-Up
         </button>
+        {% endif %}
       </div>
     </div>
   </nav>
 
   <!-- Log-In Model -->
-  <div class="modal fade" id="login-Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="login-Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  style="color:black;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -68,7 +79,13 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <form action="/login" method="POST"> {% csrf_token %}
+            <div class="row mb-3">
+              <label for ="loginusername" class="col-sm-2 col-form-labe">Username</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="loginusername" name="loginusername" placeholder="Enter yor username " required>
+              </div>
+            </div>
             <div class="row mb-3">
               <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
               <div class="col-sm-10">
@@ -76,23 +93,23 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+              <label for="loginpassword" class="col-sm-2 col-form-label">Password</label>
               <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword3">
+                <input type="password" class="form-control" id="loginpassword" name="loginpassword">
               </div>
             </div>
+            <button type="submit" class="btn btn-success">Log-In</button>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-success">Log-In</button>
         </div>
       </div>
     </div>
-  </div>
+  </div> 
 
-  <!-- Modal -->
-  <div class="modal fade" id="signup-Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!--Sign Up Modal -->
+  <div class="modal fade" id="signup-Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="color:black;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -100,38 +117,42 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form class="row g-3">
+          <form class="row g-3" action="/signup" method="POST"> {% csrf_token %}
+            <div class="mb-3">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" id="username" placeholder="Choose a unique username" name="username" required>
+            </div>
             <div class="col-md-6">
               <label for="inputfname" class="form-label">First Name</label>
-              <input type="text" class="form-control" id="inputfname">
+              <input type="text" class="form-control" id="inputfname" name="inputfname" required>
             </div>
             <div class="col-md-6">
               <label for="inputlname" class="form-label">Last Name</label>
-              <input type="text" class="form-control" id="inputlname">
+              <input type="text" class="form-control" id="inputlname" name="inputlname" required>
             </div>
             <div class="mb-3">
-              <label for="Email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="Email" >
+              <label for="inputemail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="inputemail" name="inputemail" required>
               <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
               <label for="inputPassword1" class="form-label">Password</label>
-              <input type="password" class="form-control" id="inputPassword1" >
+              <input type="password" class="form-control" id="inputPassword1" name="inputPassword1"required>
               <div id="passwordHelpBlock" class="form-text">
                 Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
               </div>
             </div>
             <div class="mb-3">
               <label for="inputPassword2" class="form-label">Confirm Password</label>
-              <input type="password" class="form-control" id="inputPassword1" >
-            </div>
-          </form>
+              <input type="password" class="form-control" id="inputPassword1" name="inputPassword2" required>
+            </div> 
+            <button type="submit" class="btn btn-success">Sign-Up</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-success">Sign-Up</button>
-        </div>
-      </div>
     </div>
   </div>
 
