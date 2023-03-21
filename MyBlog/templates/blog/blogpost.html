@@ -3,6 +3,8 @@
 {% block title %} BlogPost {% endblock title %}
 {% block blogactive %} active {% endblock blogactive %}
 {% block body %}
+{% load humanize %}
+
 <div class="container my-3">
     <div class="blog-post">
         <h2 class="blog-post-title">
@@ -15,4 +17,35 @@
         <hr>
     </div>
 </div>
+    <div class="container">
+        <h2>Comments ({{comments.count}})</h2>
+        {% if user.is_authenticated %} 
+        
+        <form action="/blog/postComment" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="comment">Post Comment</label>
+                <input type="text" class="form-control mx-2" name="comment" placeholder="Enter Your Comment here ">
+            </div>
+            <input type="hidden" name="postSno" value="{{post.Sno}}">
+            <button type="submit" class="btn btn-outline-primary my-2 mx-3">Submit</button>
+        </form>
+    
+        {% else %}
+        <h4 class="text-warning mx-3">Please Login to post a comment</h4>
+        {% endif %}
+        
+        {% for comment in comments %}
+        <div class="row my-3">
+            <div class="col-md-1">
+                {% comment %} <img src="" alt="" class="rounded"> {% endcomment %}
+            </div>
+            <div class="col-md-10 my-3">
+                <b class="text-info">{{comment.user.username}}</b> at {{comment.timestamp | naturaltime}}
+                <div>{{comment.comment}}</div>
+            </div>
+        </div>
+        
+    </div>
+    {% endfor %}
 {% endblock body %}

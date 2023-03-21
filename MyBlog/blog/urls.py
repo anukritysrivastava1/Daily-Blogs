@@ -9,4 +9,5 @@ urlpatterns = [
     
     path('', views.blogpage, name="blogpage"),
     path('blogpost/<slug:slug>', views.blogpost, name="blogpost"),
+    path('postComment', views.postComment, name="postComment"),
 ]
